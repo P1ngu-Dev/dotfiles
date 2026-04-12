@@ -117,3 +117,5 @@ export VISUAL="nvim"
 # opencode
 export PATH=/home/pingu/.opencode/bin:$PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+source /home/pingu/.config/broot/launcher/bash/br
