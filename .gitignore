@@ -1,0 +1,8 @@
+.oh-my-zsh/
+# Archivos de caché de fastfetch
+.config/fastfetch/.image_history
+.config/fastfetch/images_storage/
+# Archivos de backup
+*.bak
+# nvim lazy lock (opcional — algunos lo versionan, otros no)
+# .config/nvim/lazy-lock.json
