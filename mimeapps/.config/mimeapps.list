@@ -1,0 +1,10 @@
+[Added Associations]
+text/plain=nvim.desktop;
+image/jpeg=pinta.desktop;
+
+[Default Applications]
+image/png=io.github.woelper.Oculante.desktop
+image/jpeg=io.github.woelper.Oculante.desktop
+image/jpg=io.github.woelper.Oculante.desktop
+image/webp=io.github.woelper.Oculante.desktop
+application/pdf=sioyek.desktop
