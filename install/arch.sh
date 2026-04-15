@@ -72,7 +72,6 @@ PACMAN_PKGS=(
 
   # Fuentes
   ttf-jetbrains-mono-nerd
-  ttf-noto-fonts noto-fonts-emoji
 
   # Audio (pipewire)
   pipewire pipewire-alsa pipewire-audio pipewire-pulse pipewire-jack
@@ -82,7 +81,6 @@ PACMAN_PKGS=(
   mesa lib32-mesa
   vulkan-radeon lib32-vulkan-radeon
   libva-mesa-driver lib32-libva-mesa-driver
-  mesa-vdpau lib32-mesa-vdpau
 
   # CLI modernas
   yazi fastfetch btop
