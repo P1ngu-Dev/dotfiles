@@ -23,8 +23,8 @@ alias ll='ls -la --color=auto'
 alias update='sudo dnf update -y'
 alias hypr-reload='hyprctl reload'
 alias vim='nvim'  
-alias sdi='sudo dnf install -y'
-alias save='snapper -c root create --description'
+alias sy='sudo yay -Sy'
+alias save='sudo snapper -c root create --description'
 
 # -----------------------------
 # cd -> zoxide

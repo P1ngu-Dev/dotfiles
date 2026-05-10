@@ -1,0 +1,44 @@
+{
+    "bar": {
+        "status": {
+            "showAudio": true,
+            "showKbLayout": false,
+            "showMicrophone": false
+        }
+    },
+    "dashboard": {
+        "showOnHover": true
+    },
+    "general": {
+        "apps": {
+            "audio": [
+                "pavucontrol"
+            ],
+            "explorer": [
+                "thunar"
+            ],
+            "playback": [
+                "mpv"
+            ],
+            "terminal": [
+                "kitty"
+            ]
+        }
+    },
+    "launcher": {
+        "favouriteApps": [
+            "firefox",
+            "obsidian",
+            "spotify-launcher"
+        ],
+        "hiddenApps": [
+        ],
+        "showOnHover": false
+    },
+    "paths": {
+        "wallpaperDir": "~/Pictures/Wallpapers"
+    },
+    "services": {
+        "gpuType": "amd"
+    }
+}

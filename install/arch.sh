@@ -40,67 +40,43 @@ section "2. Dependencias base"
 sudo pacman -S --needed --noconfirm git base-devel curl wget stow
 success "Dependencias base instaladas"
 
-# ── 3. Instalar paru ──────────────────────────────────────────────────────────
-section "3. Paru (AUR helper)"
-if ! command -v paru &>/dev/null; then
-  info "Instalando paru..."
+# ── 3. Instalar yay ──────────────────────────────────────────────────────────
+section "3. Yay (AUR helper)"
+if ! command -v yay &>/dev/null; then
+  info "Instalando yay..."
   tmpdir=$(mktemp -d)
-  git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
-  (cd "$tmpdir/paru" && makepkg -si --noconfirm)
+  git clone https://aur.archlinux.org/yay.git "$tmpdir/yay"
+  (cd "$tmpdir/yay" && makepkg -si --noconfirm)
   rm -rf "$tmpdir"
-  success "paru instalado"
+  success "yay instalado"
 else
-  success "paru ya instalado: $(paru --version | head -1)"
+  success "yay ya instalado: $(yay --version | head -1)"
 fi
 
 # ── 4. Paquetes oficiales ─────────────────────────────────────────────────────
 section "4. Paquetes oficiales"
 
 PACMAN_PKGS=(
-  # Hyprland stack
-  hyprland xdg-desktop-portal-hyprland xdg-utils
-  waybar rofi-wayland
-  hyprpaper hypridle hyprlock
-  wl-clipboard cliphist
-  grim slurp swappy
-
-  # Terminal y shell
-  kitty zsh
-
-  # Editor
-  neovim
-
-  # Fuentes
-  ttf-jetbrains-mono-nerd
-
-  # Audio (pipewire)
-  pipewire pipewire-alsa pipewire-audio pipewire-pulse pipewire-jack
-  wireplumber pavucontrol
-
-  # GPU AMD
-  mesa lib32-mesa
-  vulkan-radeon lib32-vulkan-radeon
-  libva-mesa-driver lib32-libva-mesa-driver
-
-  # CLI modernas
-  yazi fastfetch btop
-  fzf bat eza zoxide fd ripgrep
-  dust duf procs tldr
-
-  # Utilidades sistema
-  brightnessctl playerctl
-  networkmanager nm-connection-editor
-  bluez bluez-utils
-  udiskie
-  polkit-gnome
-  qt5-wayland qt6-wayland
-  nwg-look
-
-  # Apps
-  mpv
-
-  # Dev
-  github-cli
+  7zip alsa-tools alsa-utils amd-ucode aria2 audacity base base-devel bat
+  bitwarden blueman bluez bluez-utils brightnessctl broot btop btrfs-progs
+  chromium cliphist cpu-x discord dnsmasq docker duf dust edk2-ovmf
+  efibootmgr eza fastfetch fd firefox fish fzf gamemode gemini-cli gimp git
+  github-cli go goverlay greetd grim grub grub-btrfs gst-plugin-pipewire
+  guestfs-tools haruna htop hypridle hyprland hyprlock hyprpolkitagent
+  hyprshot inotify-tools kdenlive kitty kubectl lazygit lib32-mesa
+  lib32-vulkan-radeon libosinfo libpulse libreoffice-fresh libvirt linux
+  linux-firmware mangohud mpv nano ncdu neovim networkmanager
+  nm-connection-editor nmap noto-fonts npm nwg-bar nwg-look obs-studio
+  obsidian oculante ollama opencode openrgb openssh os-prober
+  otf-commit-mono-nerd pacman-contrib pavucontrol php pipewire pipewire-alsa
+  pipewire-jack pipewire-pulse playerctl pnpm polkit-gnome prismlauncher procs
+  qemu-full qemu-img qt5-wayland qt6-virtualkeyboard qt6-wayland retroarch
+  ripgrep rofi rsync sddm sddm-kcm seahorse shortwave shotcut slurp snapper
+  spotify-launcher steam stow sudo swappy swtpm telegram-desktop thunar
+  thunderbird tldr tmux tor ttf-jetbrains-mono-nerd tuned udiskie unzip
+  virt-install virt-manager virt-viewer vulkan-radeon waybar wget wireplumber
+  wireshark-qt wl-clipboard wpa_supplicant xdg-desktop-portal-hyprland
+  xdg-utils yazi zed zoxide zram-generator zsh
 )
 
 sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"
@@ -110,12 +86,12 @@ success "Paquetes oficiales instalados"
 section "5. Paquetes AUR"
 
 AUR_PKGS=(
-  oculante
-  hyprshot
-  nwg-bar
+  antigravity caelestia-shell paru-debug spicetify-bin spotatui-bin
+  ttf-material-symbols-variable-git warp-terminal-autoup-bin yay yay-debug
+  zen-browser-bin
 )
 
-paru -S --needed --noconfirm "${AUR_PKGS[@]}"
+yay -S --needed --noconfirm "${AUR_PKGS[@]}"
 success "Paquetes AUR instalados"
 
 # ── 6. Servicios ──────────────────────────────────────────────────────────────
@@ -147,7 +123,7 @@ section "8. Stow — aplicar configuraciones"
 
 if [[ -d "$HOME/.dotfiles" ]]; then
   cd "$HOME/.dotfiles"
-  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps scripts)
+  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps scripts caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify mako fuzzel warp-terminal thunar vesktop zed)
   for pkg in "${STOW_PKGS[@]}"; do
     if [[ -d "$pkg" ]]; then
       stow "$pkg" && success "stow: $pkg" || warn "stow: $pkg falló (conflicto?)"
