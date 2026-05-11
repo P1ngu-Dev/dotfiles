@@ -47,7 +47,7 @@
   "parallel downloads": 5,
   "profile_config": {
     "profile": {
-      "name": "minimal"
+      "main": "Minimal"
     }
   },
   "script": "guided",

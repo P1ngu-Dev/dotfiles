@@ -15,9 +15,11 @@ Tu script `arch.sh` se encarga de instalar toda tu interfaz gráfica (Hyprland, 
    ```bash
    curl -O https://raw.githubusercontent.com/P1ngu-Dev/dotfiles/main/install/archinstall/user_configuration.json
    ```
-4. Ejecutar `archinstall` pasándole esta configuración:
+4. Ejecutar `archinstall` pasándole la configuración y las credenciales (opcional):
    ```bash
-   archinstall --config user_configuration.json
+   curl -O https://raw.githubusercontent.com/P1ngu-Dev/dotfiles/main/install/archinstall/user_configuration.json
+   curl -O https://raw.githubusercontent.com/P1ngu-Dev/dotfiles/main/install/archinstall/user_credentials.json
+   archinstall --config user_configuration.json --creds user_credentials.json
    ```
 5. `archinstall` se abrirá y ya tendrá configurado:
    * **Idioma/Teclado:** en_US (us layout)
@@ -27,10 +29,8 @@ Tu script `arch.sh` se encarga de instalar toda tu interfaz gráfica (Hyprland, 
    * **Bootloader:** GRUB
    * **Swap:** zRAM (zstd)
    * **Repositorios:** multilib habilitado
-6. Solo tendrás que completar de forma interactiva en la pantalla:
-   * **Disk Configuration** (Elegir qué disco borrar y decirle que use BTRFS)
-   * **User Accounts** (Crear tu usuario `pingu`, establecer que sea sudoer, y tu contraseña)
-   * **User password / Root password**
+   * **Perfil:** Minimal
+   * **Usuarios:** El usuario `pingu` (sudo) ya estará precargado, **solo necesitas ir a la opción de User Accounts en el menú y ponerle tu contraseña**, al igual que la contraseña de Root.
 7. Darle a **Install**.
 
 Una vez finalizado, reiniciá el sistema (`reboot`), iniciá sesión con tu usuario, y ejecutá tu script `arch.sh` para transformar esa instalación base en tu sistema completo:
