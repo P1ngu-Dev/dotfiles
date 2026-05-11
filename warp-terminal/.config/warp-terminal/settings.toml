@@ -10,7 +10,7 @@ theme = {
 enabled = false
 
 [appearance.window]
-zoom_level = 150
+zoom_level = 175
 override_opacity = 70
 
 [appearance.text]
