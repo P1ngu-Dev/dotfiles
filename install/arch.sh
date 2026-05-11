@@ -184,7 +184,7 @@ section "8. Stow — aplicar configuraciones"
 
 if [[ -d "$HOME/.dotfiles" ]]; then
   cd "$HOME/.dotfiles" || exit
-  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps scripts caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify mako fuzzel warp-terminal thunar vesktop zed)
+  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps scripts caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify warp-terminal thunar vesktop zed)
   
   stow_errors=0
   for pkg in "${STOW_PKGS[@]}"; do

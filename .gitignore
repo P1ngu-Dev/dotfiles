@@ -6,3 +6,4 @@
 *.bak
 # nvim lazy lock (opcional — algunos lo versionan, otros no)
 # .config/nvim/lazy-lock.json
+warp-terminal/.config/warp-terminal/user_preferences.json
