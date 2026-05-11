@@ -2,10 +2,10 @@
 
 Esta carpeta contiene la configuración predefinida para automatizar la instalación **base** de Arch Linux usando la herramienta oficial `archinstall`. 
 
-Al usar esto, te ahorrás configurar manualmente cosas repetitivas (como el perfil de audio, bootloader, red, etc.), mientras que dejás a `archinstall` preguntarte solo lo importante (en qué disco instalar y tus contraseñas).
+Al usar esto, te ahorrás configurar manualmente cosas repetitivas (como el perfil de audio, bootloader, red, idioma, repositorios, etc.), mientras que dejás a `archinstall` preguntarte solo lo importante (en qué disco instalar y tus contraseñas) para mayor seguridad.
 
 ### ¿Por qué perfil "minimal"?
-Tu script `arch.sh` se encarga de instalar toda tu interfaz gráfica (Hyprland, Caelestia, Waybar, etc.). Por lo tanto, la instalación base solo necesita darte un sistema con internet, tu usuario y `git`.
+Tu script `arch.sh` se encarga de instalar toda tu interfaz gráfica (Hyprland, Caelestia, Waybar, etc.). Por lo tanto, la instalación base solo necesita darte un sistema en BTRFS con internet, multilib, tu usuario y `git`.
 
 ## Instrucciones de Instalación
 
@@ -19,10 +19,17 @@ Tu script `arch.sh` se encarga de instalar toda tu interfaz gráfica (Hyprland, 
    ```bash
    archinstall --config user_configuration.json
    ```
-5. `archinstall` se abrirá y ya tendrá configurado `pipewire`, `NetworkManager`, `grub`, paquetes base (`git`, `neovim`, `amd-ucode`, etc) y el perfil minimal.
+5. `archinstall` se abrirá y ya tendrá configurado:
+   * **Idioma/Teclado:** en_US (us layout)
+   * **Zona Horaria:** America/Santiago
+   * **Audio:** Pipewire
+   * **Red:** NetworkManager
+   * **Bootloader:** GRUB
+   * **Swap:** zRAM (zstd)
+   * **Repositorios:** multilib habilitado
 6. Solo tendrás que completar de forma interactiva en la pantalla:
-   * **Disk Configuration** (Elegir qué disco borrar y particionar)
-   * **User Accounts** (Crear tu usuario `pingu` y tu contraseña)
+   * **Disk Configuration** (Elegir qué disco borrar y decirle que use BTRFS)
+   * **User Accounts** (Crear tu usuario `pingu`, establecer que sea sudoer, y tu contraseña)
    * **User password / Root password**
 7. Darle a **Install**.
 
