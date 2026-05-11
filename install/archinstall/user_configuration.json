@@ -46,7 +46,6 @@
   ],
   "parallel downloads": 5,
   "profile_config": {
-    "gfx_driver": "All open-source (default)",
     "profile": {
       "name": "minimal"
     }
