@@ -31,7 +31,7 @@
     "custom_repositories": []
   },
   "network_config": {
-    "type": "NetworkManager"
+    "type": "nm"
   },
   "no_pkg_lookups": false,
   "ntp": true,
