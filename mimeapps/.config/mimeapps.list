@@ -3,8 +3,58 @@ text/plain=nvim.desktop;
 image/jpeg=pinta.desktop;
 
 [Default Applications]
+# --- Configuracion Original ---
 image/png=io.github.woelper.Oculante.desktop
 image/jpeg=io.github.woelper.Oculante.desktop
 image/jpg=io.github.woelper.Oculante.desktop
 image/webp=io.github.woelper.Oculante.desktop
 application/pdf=sioyek.desktop
+
+# --- 1. Navegador Web (Firefox) ---
+text/html=firefox.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/about=firefox.desktop
+x-scheme-handler/unknown=firefox.desktop
+
+# --- 2. Explorador de Archivos (Thunar) ---
+inode/directory=thunar.desktop
+
+# --- 3. Editor de Texto "para todo" (Neovim) ---
+text/plain=nvim.desktop
+text/markdown=nvim.desktop
+application/json=nvim.desktop
+text/x-python=nvim.desktop
+text/x-shellscript=nvim.desktop
+text/x-csrc=nvim.desktop
+text/x-chdr=nvim.desktop
+
+# --- 4. Reproductor Multimedia (MPV) ---
+video/mp4=mpv.desktop
+video/x-matroska=mpv.desktop
+video/webm=mpv.desktop
+video/quicktime=mpv.desktop
+audio/mpeg=mpv.desktop
+audio/x-wav=mpv.desktop
+audio/flac=mpv.desktop
+
+# --- 5. Gestor de Archivos Comprimidos (File-Roller) ---
+application/zip=file-roller.desktop
+application/x-tar=file-roller.desktop
+application/x-gzip=file-roller.desktop
+application/x-bzip2=file-roller.desktop
+application/x-rar=file-roller.desktop
+application/x-7z-compressed=file-roller.desktop
+
+# --- 6. Cliente de Correo (Thunderbird) ---
+x-scheme-handler/mailto=thunderbird.desktop
+message/rfc822=thunderbird.desktop
+
+# --- Extras Aplicados ---
+x-scheme-handler/magnet=qbittorrent.desktop
+image/gif=io.github.woelper.Oculante.desktop
+image/svg+xml=io.github.woelper.Oculante.desktop
+text/calendar=thunderbird.desktop
+x-scheme-handler/discord=discord.desktop
+x-scheme-handler/tg=telegramdesktop.desktop
+x-scheme-handler/antigravity=antigravity.desktop

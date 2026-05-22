@@ -7,20 +7,32 @@ theme = {
 }
 
 [appearance.vertical_tabs]
-enabled = false
+enabled = true
 
 [appearance.window]
-zoom_level = 175
+zoom_level = 150
 override_opacity = 70
 
 [appearance.text]
 notebook_font_size = 14.0
-font_size = 13.0
+font_size = 14.0
+font_name = "Hack"
+
+[appearance.input]
+input_mode = "waterfall"
+
+[appearance.tabs]
+workspace_decoration_visibility = "hide_fullscreen"
+tab_close_button_position = "right"
+
+[appearance.cursor]
+cursor_display_type = "bar"
 
 [terminal]
 
 [terminal.input]
 input_box_type_setting = "universal"
+honor_ps1 = false
 
 [agents]
 cloud_conversation_storage_enabled = true
@@ -58,3 +70,6 @@ enabled = true
 [privacy]
 telemetry_enabled = true
 crash_reporting_enabled = true
+
+[notifications]
+toast_duration_secs = 8

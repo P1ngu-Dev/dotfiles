@@ -120,3 +120,21 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # source /home/pingu/.config/broot/launcher/bash/br
 export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+# bun completions
+[ -s "/home/pingu/.bun/_bun" ] && source "/home/pingu/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/pingu/.lmstudio/bin"
+# End of LM Studio CLI section
+
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/pingu/.local/bin:$PATH"
+
+export PATH=$PATH:/home/pingu/.spicetify

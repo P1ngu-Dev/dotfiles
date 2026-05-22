@@ -1,4 +1,12 @@
 {
+    "appearance": {
+        "font": {
+            "family": {
+                "material": "Material Symbols Rounded",
+                "sans": "JetBrainsMono Nerd Font"
+            }
+        }
+    },
     "bar": {
         "status": {
             "showAudio": true,
@@ -29,9 +37,15 @@
         "favouriteApps": [
             "firefox",
             "obsidian",
-            "spotify-launcher"
+            "spotify-launcher",
+            "dev.warp.Warp",
+            "spotify"
         ],
         "hiddenApps": [
+            "bssh",
+            "bvnc",
+            "avahi-discover",
+            "lstopo"
         ],
         "showOnHover": false
     },
