@@ -55,7 +55,7 @@ body {
   /* transparency/blur options */
   /* NOTE: TO USE TRANSPARENCY/BLUR, YOU MUST HAVE TRANSPARENT BG COLORS. FOR EXAMPLE: --bg-4: hsla(220, 15%, 10%, 0.7); */
   --transparency-tweaks: on; /* turn on to remove some elements for better transparency */
-  --remove-bg-layer: off; /* turn on to remove the base --bg-3 layer for use with window transparency (WILL OVERRIDE BACKGROUND IMAGE) */
+  --remove-bg-layer: on; /* turn on to remove the base --bg-3 layer for use with window transparency (WILL OVERRIDE BACKGROUND IMAGE) */
   --panel-blur: on; /* turn on to blur the background of panels */
   --blur-amount: 8px; /* amount of blur */
   --bg-floating: hsla(0, 0%, 7%, 0.85); /* you can set this to a more opaque color if floating panels look too transparent */
