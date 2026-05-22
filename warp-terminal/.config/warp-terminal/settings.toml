@@ -29,6 +29,7 @@ tab_close_button_position = "right"
 cursor_display_type = "bar"
 
 [terminal]
+use_audible_bell = false
 
 [terminal.input]
 input_box_type_setting = "universal"
@@ -54,7 +55,7 @@ should_render_cli_agent_toolbar = true
 is_settings_sync_enabled = true
 
 [general]
-default_session_mode = "agent"
+default_session_mode = "terminal"
 show_warning_before_quitting = false
 
 [code]
@@ -73,3 +74,24 @@ crash_reporting_enabled = true
 
 [notifications]
 toast_duration_secs = 8
+
+[notifications.preferences]
+is_agent_task_completed_enabled = true
+is_long_running_enabled = true
+is_needs_attention_enabled = true
+is_password_prompt_enabled = true
+long_running_threshold = 30
+mode = "enabled"
+play_notification_sound = true
+
+[session]
+
+[session.working_directory_config]
+advanced_mode = false
+global = { custom_dir = "", mode = "home_dir" }
+new_tab = { custom_dir = "", mode = "previous_dir" }
+new_window = { custom_dir = "", mode = "previous_dir" }
+split_pane = { custom_dir = "", mode = "previous_dir" }
+
+[system]
+force_x11 = true

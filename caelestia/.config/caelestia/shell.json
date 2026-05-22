@@ -3,7 +3,8 @@
         "font": {
             "family": {
                 "material": "Material Symbols Rounded",
-                "sans": "JetBrainsMono Nerd Font"
+                "mono": "Adwaita Sans",
+                "sans": "Adwaita Sans"
             }
         }
     },
