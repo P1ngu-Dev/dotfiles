@@ -1,0 +1,22 @@
+[output=*]
+font=CommitMono Nerd Font 11
+padding=10
+margin=10
+border-size=2
+border-radius=8
+default-timeout=5000
+ignore-timeout=yes
+
+colors=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+
+[urgency=low]
+border-color=#a6e3a1
+
+[urgency=normal]
+border-color=#89b4fa
+
+[urgency=high]
+border-color=#f38ba8
+default-timeout=0

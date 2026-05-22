@@ -105,7 +105,7 @@ PACMAN_PKGS=(
   guestfs-tools haruna htop hypridle hyprland hyprlock hyprpolkitagent
   hyprshot inotify-tools kdenlive kitty kubectl lazygit lib32-mesa
   lib32-vulkan-radeon libosinfo libpulse libreoffice-fresh libvirt linux
-  linux-firmware mangohud mpv nano ncdu neovim networkmanager
+  linux-firmware mako mangohud mpv nano ncdu neovim networkmanager
   nm-connection-editor nmap noto-fonts npm nwg-bar nwg-look obs-studio
   obsidian oculante ollama opencode openrgb openssh os-prober
   otf-commit-mono-nerd pacman-contrib pavucontrol php pipewire pipewire-alsa
@@ -170,8 +170,26 @@ else
   track_error "Fallo al habilitar fstrim.timer"
 fi
 
-# ── 7. Firewall nftables ─────────────────────────────────────────────────────
-section "7. Firewall (nftables)"
+# ── 7. System configs ────────────────────────────────────────────────────────
+section "7. Configuraciones del sistema"
+
+ZRAM_CONF_SRC="$HOME/.dotfiles/install/etc/systemd/zram-generator.conf"
+if [[ -f "$ZRAM_CONF_SRC" ]]; then
+  if sudo cp "$ZRAM_CONF_SRC" /etc/systemd/zram-generator.conf; then
+    if sudo systemctl restart systemd-zram-setup@zram0.service 2>/dev/null; then
+      track_success "zram-generator configurado (16GB zstd)"
+    else
+      track_success "zram-generator configurado (se activará al reiniciar)"
+    fi
+  else
+    track_error "Fallo al copiar zram-generator.conf"
+  fi
+else
+  track_skipped "zram-generator.conf no encontrado en dotfiles"
+fi
+
+# ── 8. Firewall nftables ─────────────────────────────────────────────────────
+section "8. Firewall (nftables)"
 
 if sudo pacman -S --needed --noconfirm nftables; then
   info "Creando configuración básica de nftables..."
@@ -234,8 +252,8 @@ else
   track_error "Fallo al instalar nftables"
 fi
 
-# ── 8. Snapper (BTRFS snapshots) ─────────────────────────────────────────────
-section "8. Snapper — snapshots BTRFS"
+# ── 9. Snapper (BTRFS snapshots) ─────────────────────────────────────────────
+section "9. Snapper — snapshots BTRFS"
 
 SNAPPER_CONFIGURED=0
 if sudo snapper --no-dbus -c root create-config /; then
@@ -281,8 +299,8 @@ if [ "$SNAPPER_CONFIGURED" -eq 1 ]; then
   fi
 fi
 
-# ── 9. GRUB os-prober ────────────────────────────────────────────────────────
-section "9. GRUB os-prober"
+# ── 10. GRUB os-prober ───────────────────────────────────────────────────────
+section "10. GRUB os-prober"
 
 GRUB_DEFAULT="/etc/default/grub"
 if sudo test -f "$GRUB_DEFAULT"; then
@@ -302,8 +320,8 @@ else
   track_skipped "GRUB os-prober (archivo /etc/default/grub no encontrado)"
 fi
 
-# ── 10. Clonar dotfiles ──────────────────────────────────────────────────────
-section "10. Dotfiles"
+# ── 11. Clonar dotfiles ─────────────────────────────────────────────────────
+section "11. Dotfiles"
 
 DOTFILES_REPO="https://github.com/P1ngu-Dev/dotfiles.git"
 
@@ -322,12 +340,70 @@ else
   track_success ".dotfiles ya existe, clonado omitido"
 fi
 
-# ── 11. Stow ─────────────────────────────────────────────────────────────────
-section "11. Stow — aplicar configuraciones"
+# ── 12. Limpiar configs por defecto ──────────────────────────────────────────
+section "12. Limpiar configs por defecto antes de Stow"
+
+BACKUP_DIR="$HOME/.config-backup"
+mkdir -p "$BACKUP_DIR"
+
+CONFLICT_DIRS=(
+  ".config/hypr"
+  ".config/kitty"
+  ".config/nvim"
+  ".config/yazi"
+  ".config/fastfetch"
+  ".config/zsh"
+  ".config/mimeapps.list"
+  ".config/caelestia"
+  ".config/btop"
+  ".config/cava"
+  ".config/gtk-3.0"
+  ".config/gtk-4.0"
+  ".config/qtengine"
+  ".config/spicetify"
+  ".config/warp-terminal"
+  ".config/Thunar"
+  ".config/vesktop"
+  ".config/zed"
+  ".config/fuzzel"
+  ".config/discord-themes"
+  ".config/BetterDiscord"
+  ".config/Vencord"
+  ".config/Equicord"
+  ".config/nvtop"
+  ".config/opencode"
+  ".config/htop"
+  ".config/mako"
+  ".zshrc"
+  ".p10k.zsh"
+  ".zprofile"
+  ".gitconfig"
+)
+
+for item in "${CONFLICT_DIRS[@]}"; do
+  full_path="$HOME/$item"
+  if [[ -e "$full_path" || -L "$full_path" ]]; then
+    if [[ -L "$full_path" ]]; then
+      rm -f "$full_path"
+      info "Eliminado symlink existente: $item"
+    elif [[ -d "$full_path" ]]; then
+      rm -rf "$full_path"
+      info "Eliminado directorio por defecto: $item"
+    else
+      rm -f "$full_path"
+      info "Eliminado archivo por defecto: $item"
+    fi
+  fi
+done
+
+track_success "Configs por defecto eliminadas"
+
+# ── 13. Stow ─────────────────────────────────────────────────────────────────
+section "13. Stow — aplicar configuraciones"
 
 if [[ -d "$HOME/.dotfiles" ]]; then
   cd "$HOME/.dotfiles" || exit
-  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify warp-terminal thunar vesktop zed fuzzel discord-themes nvtop opencode htop)
+  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify warp-terminal thunar vesktop zed fuzzel discord-themes nvtop opencode htop mako)
   
   stow_errors=0
   for pkg in "${STOW_PKGS[@]}"; do
@@ -352,8 +428,8 @@ else
   track_skipped "Stow omitido (directorio .dotfiles no encontrado)"
 fi
 
-# ── 12. Zsh + Oh My Zsh ──────────────────────────────────────────────────────
-section "12. Zsh + Oh My Zsh"
+# ── 14. Zsh + Oh My Zsh ─────────────────────────────────────────────────────
+section "14. Zsh + Oh My Zsh"
 
 if [[ -f "$HOME/.dotfiles/zsh/install-zsh.sh" ]]; then
   if bash "$HOME/.dotfiles/zsh/install-zsh.sh"; then
@@ -375,8 +451,8 @@ else
   track_success "zsh ya es la shell por defecto"
 fi
 
-# ── 13. Post-config CLI ──────────────────────────────────────────────────────
-section "13. Post-config CLI"
+# ── 15. Post-config CLI ─────────────────────────────────────────────────────
+section "15. Post-config CLI"
 if zoxide init zsh >/dev/null 2>&1; then
   track_success "zoxide inicializado"
 else
@@ -422,4 +498,6 @@ echo "  4. Si hubo errores en stow, revisa archivos conflictivos en ~/.config"
 echo "  5. Configurar reglas de nftables según necesidad: sudo nft list ruleset"
 echo "  6. Verificar snapshots de snapper: sudo snapper list"
 echo "  7. Configurar contraseña de root: sudo passwd root"
+echo "  8. Instalar GRUB theme Nino (instalación manual)"
+echo "  9. Deploy manual de system configs (mkinitcpio.conf, vconsole.conf)"
 echo -e "${BOLD}${CYAN}════════════════════════════════════════════════════════════════${RESET}\n"

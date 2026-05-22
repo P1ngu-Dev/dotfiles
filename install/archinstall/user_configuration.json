@@ -56,5 +56,11 @@
     "enabled": true,
     "algorithm": "zstd"
   },
-  "timezone": "America/Santiago"
+  "timezone": "America/Santiago",
+  "btrfs_subvolumes": [
+    {"mountpoint": "/", "name": "@"},
+    {"mountpoint": "/home", "name": "@home"},
+    {"mountpoint": "/var/log", "name": "@log"},
+    {"mountpoint": "/var/cache/pacman/pkg", "name": "@pkg"}
+  ]
 }

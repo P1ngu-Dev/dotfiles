@@ -6,13 +6,47 @@
                 "mono": "Adwaita Sans",
                 "sans": "Adwaita Sans"
             }
+        },
+        "transparency": {
+            "base": 0.8954976985040275,
+            "enabled": true
+        }
+    },
+    "background": {
+        "desktopClock": {
+            "background": {
+                "enabled": false,
+                "opacity": 0.6999725045509709
+            },
+            "enabled": true,
+            "position": "top-left"
         }
     },
     "bar": {
+        "activeWindow": {
+            "compact": false
+        },
+        "clock": {
+            "background": true,
+            "showDate": true
+        },
+        "persistent": true,
+        "showOnHover": true,
         "status": {
             "showAudio": true,
+            "showBattery": true,
             "showKbLayout": false,
+            "showLockStatus": true,
             "showMicrophone": false
+        },
+        "tray": {
+            "background": true,
+            "compact": true,
+            "recolour": true
+        },
+        "workspaces": {
+            "maxWindowIcons": 5,
+            "occupiedBg": true
         }
     },
     "dashboard": {

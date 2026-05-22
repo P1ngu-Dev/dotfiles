@@ -7,3 +7,10 @@
 # nvim lazy lock (opcional — algunos lo versionan, otros no)
 # .config/nvim/lazy-lock.json
 warp-terminal/.config/warp-terminal/user_preferences.json
+# vesktop runtime data
+vesktop/.config/vesktop/Crashpad/
+vesktop/.config/vesktop/Singleton*
+vesktop/.config/vesktop/sessionData/
+vesktop/.config/vesktop/settings.json
+vesktop/.config/vesktop/settings/
+vesktop/.config/vesktop/state.json

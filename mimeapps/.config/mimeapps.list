@@ -55,6 +55,6 @@ x-scheme-handler/magnet=qbittorrent.desktop
 image/gif=io.github.woelper.Oculante.desktop
 image/svg+xml=io.github.woelper.Oculante.desktop
 text/calendar=thunderbird.desktop
-x-scheme-handler/discord=discord.desktop
+x-scheme-handler/discord=vesktop.desktop
 x-scheme-handler/tg=telegramdesktop.desktop
 x-scheme-handler/antigravity=antigravity.desktop
