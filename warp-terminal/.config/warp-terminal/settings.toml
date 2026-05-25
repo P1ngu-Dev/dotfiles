@@ -10,13 +10,15 @@ theme = {
 enabled = true
 
 [appearance.window]
-zoom_level = 150
+zoom_level = 125
 override_opacity = 70
 
 [appearance.text]
 notebook_font_size = 14.0
-font_size = 14.0
-font_name = "Hack"
+font_size = 16.0
+font_name = "JetBrainsMonoNL Nerd Font Mono"
+ai_font_name = "JetBrainsMonoNL Nerd Font Mono"
+match_ai_font = false
 
 [appearance.input]
 input_mode = "waterfall"
@@ -32,8 +34,8 @@ cursor_display_type = "bar"
 use_audible_bell = false
 
 [terminal.input]
-input_box_type_setting = "universal"
-honor_ps1 = false
+input_box_type_setting = "classic"
+honor_ps1 = true
 
 [agents]
 cloud_conversation_storage_enabled = true
