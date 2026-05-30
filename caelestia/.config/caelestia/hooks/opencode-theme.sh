@@ -2,15 +2,14 @@
 set -euo pipefail
 
 scheme_file="${XDG_STATE_HOME:-$HOME/.local/state}/caelestia/scheme.json"
-config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
-theme_dir="$config_dir/themes"
-theme_file="$theme_dir/caelestia.json"
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/themes"
+theme_file="$cache_dir/opencode.json"
 
 if [[ ! -f "$scheme_file" ]]; then
   exit 0
 fi
 
-mkdir -p "$theme_dir"
+mkdir -p "$cache_dir"
 
 export SCHEME_FILE="$scheme_file"
 export THEME_FILE_PATH="$theme_file"
@@ -169,6 +168,7 @@ Path(out_path).write_text(json.dumps(theme, indent=2) + "\n")
 PY
 
 # Asegurar que tui.json selecciona el tema caelestia
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
 config_file="$config_dir/tui.json"
 if [[ ! -f "$config_file" ]]; then
   printf '{\n  "theme": "caelestia"\n}\n' > "$config_file"

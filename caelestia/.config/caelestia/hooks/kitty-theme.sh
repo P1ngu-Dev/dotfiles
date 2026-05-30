@@ -2,14 +2,14 @@
 set -euo pipefail
 
 scheme_file="${XDG_STATE_HOME:-$HOME/.local/state}/caelestia/scheme.json"
-kitty_conf_dir="${XDG_CONFIG_HOME:-$HOME/.config}/kitty"
-kitty_theme_file="$kitty_conf_dir/caelestia.conf"
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/themes"
+kitty_theme_file="$cache_dir/kitty.conf"
 
 if [[ ! -f "$scheme_file" ]]; then
   exit 0
 fi
 
-mkdir -p "$kitty_conf_dir"
+mkdir -p "$cache_dir"
 
 get_color() {
   local key="$1"
