@@ -1,4 +1,4 @@
-# HumboltOS modern CLI replacements
+# PenguOS modern CLI replacements
 # Guarda este archivo en: ~/.config/zsh/modern-cli.zsh
 # Luego cárgalo desde tu ~/.zshrc con:
 #   source ~/.config/zsh/modern-cli.zsh

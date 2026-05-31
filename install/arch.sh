@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# HumboltOS — Arch Post-Install Bootstrap
+# PenguOS — Arch Post-Install Bootstrap
 # Correr DESPUÉS de archinstall, como usuario normal (no root)
 # =============================================================================
 
@@ -57,7 +57,7 @@ fatal_error() {
 [[ "$EUID" -eq 0 ]] && fatal_error "No correr como root. Usá tu usuario normal."
 command -v pacman &>/dev/null || fatal_error "Este script es solo para Arch Linux."
 
-section "HumboltOS Arch Bootstrap"
+section "PenguOS Arch Bootstrap"
 info "Usuario: $(whoami) | Fecha: $(date)"
 
 # ── 1. Actualizar sistema ─────────────────────────────────────────────────────
@@ -119,27 +119,223 @@ PACMAN_PKGS=(
   xdg-utils yazi zed zoxide zram-generator zsh
 )
 
-if sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"; then
-  track_success "Paquetes oficiales (pacman) instalados"
-else
-  track_error "Hubo errores al instalar algunos paquetes oficiales"
-fi
+echo ""
+echo -e "${YELLOW}Paquetes a instalar: ${#PACMAN_PKGS[@]}${RESET}"
+echo ""
+PS3=$'\n'"${CYAN}Seleccioná una opcion para Pacman: ${RESET}"
+options=(
+  "Instalar todos los paquetes (default)"
+  "Ver lista de paquetes"
+  "Editar lista interactivamente"
+  "Agregar paquete manualmente"
+  "Saltear instalacion"
+)
+
+select opt in "${options[@]}"; do
+  case "$REPLY" in
+    1)
+      info "Instalando ${#PACMAN_PKGS[@]} paquetes..."
+      if sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"; then
+        track_success "Paquetes oficiales (pacman) instalados"
+      else
+        track_error "Hubo errores al instalar algunos paquetes oficiales"
+      fi
+      break
+      ;;
+    2)
+      echo ""
+      info "Paquetes Pacman:"
+      for pkg in "${PACMAN_PKGS[@]}"; do
+        echo "  - $pkg"
+      done
+      echo ""
+      info "Total: ${#PACMAN_PKGS[@]} paquetes"
+      echo ""
+      echo -e "${CYAN}Seleccioná una opcion: ${RESET}"
+      ;;
+    3)
+      echo ""
+      info "Editando lista de paquetes (ingresa nombre para remover, 'done' para terminar):"
+      TEMP_PKGS=("${PACMAN_PKGS[@]}")
+      while true; do
+        echo ""
+        echo -e "${YELLOW}Paquetes actuales (${#TEMP_PKGS[@]}):${RESET}"
+        select rm_pkg in "${TEMP_PKGS[@]}" "done"; do
+          if [[ "$rm_pkg" == "done" ]]; then
+            PACMAN_PKGS=("${TEMP_PKGS[@]}")
+            break 2
+          fi
+          TEMP_PKGS=("${TEMP_PKGS[@]/$rm_pkg}")
+          break
+        done
+      done
+      info "Lista final: ${#PACMAN_PKGS[@]} paquetes"
+      if sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"; then
+        track_success "Paquetes oficiales (pacman) instalados"
+      else
+        track_error "Hubo errores al instalar algunos paquetes oficiales"
+      fi
+      break
+      ;;
+    4)
+      echo ""
+      read -rp "Nombre del paquete a agregar: " new_pkg
+      if [[ -n "$new_pkg" ]]; then
+        PACMAN_PKGS+=("$new_pkg")
+        info "Paquete '$new_pkg' agregado. Total: ${#PACMAN_PKGS[@]}"
+        echo -e "${CYAN}Seleccioná una opcion: ${RESET}"
+      else
+        warn "Nombre vacio, intentando instalar igual..."
+        if sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"; then
+          track_success "Paquetes oficiales (pacman) instalados"
+        else
+          track_error "Hubo errores al instalar algunos paquetes oficiales"
+        fi
+        break
+      fi
+      ;;
+    5)
+      track_skipped "Instalacion de paquetes oficiales (pacman)"
+      break
+      ;;
+    *)
+      warn "Opcion invalida, instalando todos..."
+      if sudo pacman -S --needed --noconfirm "${PACMAN_PKGS[@]}"; then
+        track_success "Paquetes oficiales (pacman) instalados"
+      else
+        track_error "Hubo errores al instalar algunos paquetes oficiales"
+      fi
+      break
+      ;;
+  esac
+done
 
 # ── 5. Paquetes AUR ───────────────────────────────────────────────────────────
 section "5. Paquetes AUR"
 
+AUR_PKGS=(
+  antigravity caelestia-shell paru-debug spicetify-bin spotatui-bin
+  ttf-material-symbols-variable-git warp-terminal-autoup-bin
+  zen-browser-bin
+)
+
+AUR_BROKEN=(
+  "spotatui-bin"
+  "warp-terminal-autoup-bin"
+)
+
+AUR_ALTERNATIVES=(
+  "spotatui-bin|spotify-tui"
+  "warp-terminal-autoup-bin|warp-terminal"
+)
+
 if command -v yay &>/dev/null; then
-  AUR_PKGS=(
-    antigravity caelestia-shell paru-debug spicetify-bin spotatui-bin
-    ttf-material-symbols-variable-git warp-terminal-autoup-bin
-    zen-browser-bin
+  echo ""
+  echo -e "${YELLOW}Paquetes AUR a instalar: ${#AUR_PKGS[@]}${RESET}"
+  echo ""
+  PS3=$'\n'"${CYAN}Seleccioná una opcion para AUR: ${RESET}"
+  options=(
+    "Instalar todos los paquetes (default)"
+    "Ver lista de paquetes"
+    "Ver paquetes rotos y alternativas"
+    "Editar lista interactivamente"
+    "Agregar paquete manualmente"
+    "Saltear instalacion"
   )
 
-  if yay -S --needed --noconfirm "${AUR_PKGS[@]}"; then
-    track_success "Paquetes AUR instalados"
-  else
-    track_error "Hubo errores al instalar algunos paquetes AUR"
-  fi
+  select opt in "${options[@]}"; do
+    case "$REPLY" in
+      1)
+        info "Instalando ${#AUR_PKGS[@]} paquetes AUR..."
+        if yay -S --needed --noconfirm "${AUR_PKGS[@]}"; then
+          track_success "Paquetes AUR instalados"
+        else
+          track_error "Hubo errores al instalar algunos paquetes AUR"
+        fi
+        break
+        ;;
+      2)
+        echo ""
+        info "Paquetes AUR:"
+        for pkg in "${AUR_PKGS[@]}"; do
+          echo "  - $pkg"
+        done
+        echo ""
+        info "Total: ${#AUR_PKGS[@]} paquetes"
+        echo ""
+        echo -e "${CYAN}Seleccioná una opcion: ${RESET}"
+        ;;
+      3)
+        echo ""
+        info "Paquetes conocidos como problematicos:"
+        for broken in "${AUR_BROKEN[@]}"; do
+          alt=$(echo "${AUR_ALTERNATIVES[@]}" | tr ' ' '\n' | grep "^$broken|" | cut -d'|' -f2)
+          if [[ -n "$alt" ]]; then
+            echo -e "  ${RED}x${RESET} $broken"
+            echo -e "      ${GREEN}→${RESET} Alternativa: $alt"
+          else
+            echo -e "  ${RED}x${RESET} $broken"
+          fi
+        done
+        echo ""
+        echo -e "${CYAN}Seleccioná una opcion: ${RESET}"
+        ;;
+      4)
+        echo ""
+        info "Editando lista de paquetes (ingresa nombre para remover, 'done' para terminar):"
+        TEMP_AUR=("${AUR_PKGS[@]}")
+        while true; do
+          echo ""
+          echo -e "${YELLOW}Paquetes actuales (${#TEMP_AUR[@]}):${RESET}"
+          select rm_pkg in "${TEMP_AUR[@]}" "done"; do
+            if [[ "$rm_pkg" == "done" ]]; then
+              AUR_PKGS=("${TEMP_AUR[@]}")
+              break 2
+            fi
+            TEMP_AUR=("${TEMP_AUR[@]/$rm_pkg}")
+            break
+          done
+        done
+        info "Lista final: ${#AUR_PKGS[@]} paquetes"
+        if yay -S --needed --noconfirm "${AUR_PKGS[@]}"; then
+          track_success "Paquetes AUR instalados"
+        else
+          track_error "Hubo errores al instalar algunos paquetes AUR"
+        fi
+        break
+        ;;
+      5)
+        echo ""
+        read -rp "Nombre del paquete AUR a agregar: " new_aur
+        if [[ -n "$new_aur" ]]; then
+          AUR_PKGS+=("$new_aur")
+          info "Paquete '$new_aur' agregado. Total: ${#AUR_PKGS[@]}"
+          echo -e "${CYAN}Seleccioná una opcion: ${RESET}"
+        else
+          warn "Nombre vacio, intentando instalar igual..."
+          if yay -S --needed --noconfirm "${AUR_PKGS[@]}"; then
+            track_success "Paquetes AUR instalados"
+          else
+            track_error "Hubo errores al instalar algunos paquetes AUR"
+          fi
+          break
+        fi
+        ;;
+      6)
+        track_skipped "Instalacion de paquetes AUR"
+        break
+        ;;
+      *)
+        warn "Opcion invalida, instalando todos..."
+        if yay -S --needed --noconfirm "${AUR_PKGS[@]}"; then
+          track_success "Paquetes AUR instalados"
+        else
+          track_error "Hubo errores al instalar algunos paquetes AUR"
+        fi
+        break
+        ;;
+    esac
+  done
 else
   track_skipped "Instalación de paquetes AUR (yay no está disponible)"
 fi
