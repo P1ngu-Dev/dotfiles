@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # =============================================================================
 # PenguOS — Arch Linux Installation Bootstrapper
-# Correr DESPUÉS de bootear la ISO de Arch Linux
+# Descarga la configuración de archinstall y ejecuta el installer
 # =============================================================================
-
-set -e
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -24,6 +22,8 @@ BOLD_CYAN="${BOLD}${CYAN}"
 BRANCH="${1:-main}"
 REPO="P1ngu-Dev/dotfiles"
 BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}/install"
+CONFIG_FILE="user_configuration.json"
+CREDS_FILE="user_credentials.json"
 
 info "PenguOS Installation Bootstrapper"
 echo -e "${BOLD_CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
@@ -31,7 +31,7 @@ echo ""
 
 # ── Verificaciones ────────────────────────────────────────────────────────────
 if ! command -v curl &>/dev/null; then
-    error "curl no está disponible. Esta imagen de Arch no lo incluye."
+    error "curl no está disponible."
     exit 1
 fi
 
@@ -43,7 +43,7 @@ fi
 # ── Detectar conexión a internet ─────────────────────────────────────────────
 info "Verificando conexión a internet..."
 if ! curl -s --max-time 5 https://github.com &>/dev/null; then
-    warn "No hay conexión a internet detectada."
+    warn "No hay conexión a internet."
     echo ""
     echo "Para conectarte a WiFi ejecutá: iwctl"
     echo "O configurá ethernet si tenés cable."
@@ -54,16 +54,29 @@ fi
 success "Conexión a internet verificada."
 
 # ── Descargar configuración ───────────────────────────────────────────────────
-info "Descargando configuración de archinstall..."
-CONFIG_DIR=$(mktemp -d)
-cd "$CONFIG_DIR"
+download_configs() {
+    info "Descargando configuración..."
+    if curl -sL -o "$CONFIG_FILE" "${BASE_URL}/archinstall/$CONFIG_FILE" && \
+       curl -sL -o "$CREDS_FILE" "${BASE_URL}/archinstall/$CREDS_FILE"; then
+        success "Configuración descargada."
+        return 0
+    else
+        error "Falló la descarga de configuración."
+        return 1
+    fi
+}
 
-if curl -sL -o user_configuration.json "${BASE_URL}/archinstall/user_configuration.json" && \
-   curl -sL -o user_credentials.json "${BASE_URL}/archinstall/user_credentials.json"; then
-    success "Configuración descargada."
+echo ""
+if [[ -f "$CONFIG_FILE" && -f "$CREDS_FILE" ]]; then
+    info "Ya existe configuración en el directorio actual."
+    read -rp "¿Querés volver a descargar? [y/N]: " redownload
+    if [[ "${redownload,,}" == "y" ]]; then
+        download_configs
+    else
+        success "Usando archivos existentes."
+    fi
 else
-    error "Falló la descarga de configuración."
-    exit 1
+    download_configs
 fi
 
 # ── Mostrar resumen ──────────────────────────────────────────────────────────
@@ -88,13 +101,28 @@ echo "  1. Seleccionar el disco donde instalar"
 echo "  2. Establecer contraseña para 'pingu'"
 echo "  3. Establecer contraseña para root"
 echo ""
-read -rp "Press Enter para continuar con archinstall..."
+echo -e "${BOLD}Archivos descargados:${RESET}"
+echo "  $(pwd)/$CONFIG_FILE"
+echo "  $(pwd)/$CREDS_FILE"
+echo ""
+echo "Para ejecutar archinstall:"
+echo -e "  ${CYAN}archinstall --config $CONFIG_FILE${RESET}"
+echo ""
+echo "O con credenciales (experimental):"
+echo -e "  ${CYAN}archinstall --config $CONFIG_FILE --creds $CREDS_FILE${RESET}"
+echo ""
+read -rp "¿Querés ejecutar archinstall ahora? [Y/n]: " run_install
+
+if [[ "${run_install,,}" =~ ^n ]]; then
+    info "Saliendo. Los archivos quedaron descargados."
+    info "Ejecutá 'archinstall --config $CONFIG_FILE' cuando quieras."
+    exit 0
+fi
 
 # ── Ejecutar archinstall ──────────────────────────────────────────────────────
 info "Ejecutando archinstall..."
 echo ""
-
-archinstall --config user_configuration.json --creds user_credentials.json
+archinstall --config "$CONFIG_FILE" --creds "$CREDS_FILE"
 
 # ── Post-install ──────────────────────────────────────────────────────────────
 echo ""
@@ -107,10 +135,5 @@ echo "  2. Iniciar sesión como 'pingu'"
 echo "  3. Ejecutar el script de post-instalación:"
 echo ""
 echo -e "  ${CYAN}curl -L https://raw.githubusercontent.com/${REPO}/${BRANCH}/install/first-boot/bootstrap.sh | bash${RESET}"
-echo "  o"
-echo -e "  ${CYAN}git clone https://github.com/${REPO}.git ~/.dotfiles && bash ~/.dotfiles/install/arch.sh${RESET}"
 echo ""
 echo -e "${BOLD_CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-
-cd /
-rm -rf "$CONFIG_DIR"
