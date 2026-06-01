@@ -119,22 +119,22 @@ section "4. Paquetes oficiales"
 PACMAN_PKGS=(
   7zip alsa-tools alsa-utils amd-ucode aria2 audacity base base-devel bat
   bitwarden blueman bluez bluez-utils brightnessctl broot btop btrfs-progs
-  chromium cliphist cpu-x discord dnsmasq duf dust edk2-ovmf
+  chromium cliphist cmatrix cpu-x discord docker docker-compose dnsmasq duf dust edk2-ovmf
   efibootmgr eza fastfetch fd firefox fish fzf gamemode gemini-cli gimp git
   github-cli go goverlay greetd grim grub grub-btrfs gst-plugin-pipewire
   guestfs-tools haruna htop hypridle hyprland hyprlock hyprpolkitagent
   hyprshot inotify-tools kdenlive kitty kubectl lazygit lib32-mesa
   lib32-vulkan-radeon libosinfo libpulse libreoffice-fresh libvirt linux
-  linux-firmware mako mangohud mpv nano ncdu neovim networkmanager
+  linux-firmware lynis mako mangohud mpv nano ncdu neovim networkmanager
   nm-connection-editor nmap noto-fonts npm nwg-bar nwg-look obs-studio
   obsidian oculante ollama opencode openrgb openssh os-prober
   otf-commit-mono-nerd pacman-contrib pavucontrol php pipewire pipewire-alsa
   pipewire-jack pipewire-pulse playerctl pnpm polkit-gnome prismlauncher procs
-  qemu-full qemu-img qt5-wayland qt6-virtualkeyboard qt6-wayland retroarch
-  ripgrep rofi rsync sddm sddm-kcm seahorse shortwave shotcut slurp snapper
+  python-pip python-pipx qemu-full qemu-img qt5-wayland qt6-virtualkeyboard qt6-wayland retroarch
+  ripgrep rkhunter rofi rsync sddm sddm-kcm seahorse shortwave shotcut slurp snapper
   spotify-launcher steam stow sudo swappy swtpm telegram-desktop thunar
   thunderbird tldr tmux tor ttf-jetbrains-mono-nerd tuned udiskie unzip
-  virt-install virt-manager virt-viewer vulkan-radeon waybar wget wireplumber
+  virt-install virt-manager virt-viewer vulkan-radeon warp-terminal waybar wget wireplumber
   wireshark-qt wl-clipboard wpa_supplicant xdg-desktop-portal-hyprland
   xdg-utils yazi zed zoxide zram-generator zsh
 )
@@ -234,19 +234,18 @@ done
 section "5. Paquetes AUR"
 
 AUR_PKGS=(
-  antigravity caelestia-shell paru-debug spicetify-bin spotatui-bin
-  ttf-material-symbols-variable-git warp-terminal-autoup-bin
+  antigravity antigravity-ide caelestia-shell lm-studio ngrok paru-debug
+  spicetify-bin spotatui-bin spotify terax-bin
+  ttf-material-symbols-variable-git vesktop visual-studio-code-bin
   zen-browser-bin
 )
 
 AUR_BROKEN=(
   "spotatui-bin"
-  "warp-terminal-autoup-bin"
 )
 
 AUR_ALTERNATIVES=(
   "spotatui-bin|spotify-tui"
-  "warp-terminal-autoup-bin|warp-terminal"
 )
 
 if command -v yay &>/dev/null; then
