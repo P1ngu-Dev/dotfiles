@@ -1,2 +1,18 @@
 ---
+"editor_view:move_backward_one_word": none
+"code_view:close_all_tabs": ctrl-r
+"terminal:executing_command_move_cursor_word_left": none
+"workspace:close_active_tab": ctrl-q
+"terminal:copy": ctrl-shift-C
+"code_view:close_saved_tabs": none
+"workspace:move_tab_left": ctrl-shift-left
 "terminal:paste": ctrl-v
+"editor_view:add_cursor_above": none
+"workspace:activate_next_tab": none
+"workspace:activate_prev_tab": none
+"editor_view:add_cursor_below": none
+"workspace:move_tab_right": ctrl-shift-right
+"editor_view:move_forward_one_word": none
+"welcome_view:open_project": none
+"terminal:executing_command_move_cursor_word_right": none
+"workspace:new_tab": ctrl-t

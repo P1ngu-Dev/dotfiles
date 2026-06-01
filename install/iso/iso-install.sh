@@ -29,6 +29,21 @@ info "PenguOS Installation Bootstrapper"
 echo -e "${BOLD_CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
 
+# ── Verificar terminal interactiva ───────────────────────────────────────────
+if [[ ! -t 0 ]]; then
+    warn "Ejecutando desde pipe/redirect. Esto puede causar problemas con archinstall."
+    echo ""
+    echo "Para mejor experiencia, ejecutá:"
+    echo -e "  ${CYAN}curl -LO https://raw.githubusercontent.com/${REPO}/${BRANCH}/install/iso/iso-install.sh${RESET}"
+    echo -e "  ${CYAN}chmod +x iso-install.sh && ./iso-install.sh${RESET}"
+    echo ""
+    read -rp "¿Continuar de todas formas? [y/N]: " continueAnyway
+    if [[ "${continueAnyway,,}" != "y" ]]; then
+        info "Saliendo."
+        exit 0
+    fi
+fi
+
 # ── Verificaciones ────────────────────────────────────────────────────────────
 if ! command -v curl &>/dev/null; then
     error "curl no está disponible."

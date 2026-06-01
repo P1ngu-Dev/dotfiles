@@ -60,6 +60,26 @@ command -v pacman &>/dev/null || fatal_error "Este script es solo para Arch Linu
 section "PenguOS Arch Bootstrap"
 info "Usuario: $(whoami) | Fecha: $(date)"
 
+# ── Pre-autenticar sudo (pedir contraseña una vez) ───────────────────────────
+info "Solicitando permisos de sudo (se pedirán una sola vez)..."
+if ! sudo -v; then
+    fatal_error "No se pudieron obtener permisos de sudo."
+fi
+
+# Mantener el ticket de sudo vivo en segundo plano
+sudo-keep-alive() {
+    while true; do
+        sleep 300
+        sudo -v 2>/dev/null || break
+    done
+}
+sudo-keep-alive &
+SUDO_KEEPALIVE_PID=$!
+
+info "Permisos de sudo obtenidos. El script continuará sin más pedidos de contraseña."
+
+trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
+
 # ── 1. Actualizar sistema ─────────────────────────────────────────────────────
 section "1. Actualización del sistema"
 if sudo pacman -Syu --noconfirm; then
@@ -354,7 +374,7 @@ else
   track_error "Fallo al habilitar bluetooth"
 fi
 
-if sudo systemctl enable --now sddm; then
+if sudo systemctl enable sddm; then
   track_success "Servicio sddm habilitado"
 else
   track_error "Fallo al habilitar sddm"
@@ -576,38 +596,65 @@ CONFLICT_DIRS=(
   ".gitconfig"
 )
 
+clean_errors=0
+declare -a clean_removed
+declare -a clean_failed
+
 for item in "${CONFLICT_DIRS[@]}"; do
   full_path="$HOME/$item"
   if [[ -e "$full_path" || -L "$full_path" ]]; then
     if [[ -L "$full_path" ]]; then
-      rm -f "$full_path"
-      info "Eliminado symlink existente: $item"
+      if rm -f "$full_path" 2>/dev/null; then
+        clean_removed+=("$item (symlink)")
+      else
+        clean_failed+=("$item (symlink - error al remover)")
+        clean_errors=$((clean_errors + 1))
+      fi
     elif [[ -d "$full_path" ]]; then
-      rm -rf "$full_path"
-      info "Eliminado directorio por defecto: $item"
+      if rm -rf "$full_path" 2>/dev/null; then
+        clean_removed+=("$item (directorio)")
+      else
+        clean_failed+=("$item (directorio - error al remover)")
+        clean_errors=$((clean_errors + 1))
+      fi
     else
-      rm -f "$full_path"
-      info "Eliminado archivo por defecto: $item"
+      if rm -f "$full_path" 2>/dev/null; then
+        clean_removed+=("$item (archivo)")
+      else
+        clean_failed+=("$item (archivo - error al remover)")
+        clean_errors=$((clean_errors + 1))
+      fi
     fi
   fi
 done
 
-track_success "Configs por defecto eliminadas"
+if [ "$clean_errors" -eq 0 ]; then
+  track_success "Configs limpiadas (${#clean_removed[@]} items removidos)"
+else
+  track_error "Limpieza de configs incompleta: ${clean_failed[*]}"
+fi
 
 # ── 13. Stow ─────────────────────────────────────────────────────────────────
 section "13. Stow — aplicar configuraciones"
 
 if [[ -d "$HOME/.dotfiles" ]]; then
   cd "$HOME/.dotfiles" || exit
-  STOW_PKGS=(hyprland kitty nvim yazi fastfetch zsh git mimeapps caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify warp-terminal thunar vesktop zed fuzzel discord-themes nvtop opencode htop mako)
+  STOW_PKGS=(hyprland kitty nvim yazi fastfetch git mimeapps caelestia btop cava gtk-3.0 gtk-4.0 qtengine spicetify warp-terminal thunar vesktop zed fuzzel discord-themes nvtop opencode htop mako)
   
   stow_errors=0
+  declare -a stow_failed_pkgs
   for pkg in "${STOW_PKGS[@]}"; do
     if [[ -d "$pkg" ]]; then
+      if [[ "$pkg" == "opencode" ]] && [[ -f "$HOME/.config/opencode/themes/caelestia.json" ]]; then
+        rm -f "$HOME/.config/opencode/themes/caelestia.json"
+      fi
       if stow "$pkg"; then
         success "stow: $pkg"
       else
-        error "stow: $pkg falló (posible conflicto de archivos)"
+        stow_err=$(stow "$pkg" 2>&1 | grep -E "conflicts?|not owned|existing" | head -1)
+        [[ -z "$stow_err" ]] && stow_err="conflicto de archivos"
+        error "stow: $pkg falló — $stow_err"
+        stow_failed_pkgs+=("$pkg")
         stow_errors=$((stow_errors + 1))
       fi
     else
@@ -618,7 +665,7 @@ if [[ -d "$HOME/.dotfiles" ]]; then
   if [ "$stow_errors" -eq 0 ]; then
     track_success "Todas las configuraciones aplicadas (Stow)"
   else
-    track_error "Algunas configuraciones (Stow) fallaron ($stow_errors errores)"
+    track_error "Stow falló: ${stow_failed_pkgs[*]}"
   fi
 else
   track_skipped "Stow omitido (directorio .dotfiles no encontrado)"
@@ -645,6 +692,30 @@ if [[ "$SHELL" != "$(which zsh)" ]]; then
   fi
 else
   track_success "zsh ya es la shell por defecto"
+fi
+
+zsh_link_errors=0
+declare -a zsh_links_created
+declare -a zsh_links_failed
+
+info "Creando symlinks de zsh..."
+mkdir -p "$HOME/.config/zsh"
+
+for item in ".zshrc:.dotfiles/zsh/.zshrc" ".p10k.zsh:.dotfiles/zsh/.p10k.zsh" ".zprofile:.dotfiles/zsh/.zprofile" ".config/zsh/alias.zsh:.dotfiles/zsh/.config/zsh/alias.zsh"; do
+  target="${item%%:*}"
+  source="${item##*:}"
+  if ln -sf "$HOME/$source" "$HOME/$target" 2>/dev/null; then
+    zsh_links_created+=("$target")
+  else
+    zsh_links_failed+=("$target")
+    zsh_link_errors=$((zsh_link_errors + 1))
+  fi
+done
+
+if [ "$zsh_link_errors" -eq 0 ]; then
+  track_success "Symlinks de zsh creados (${#zsh_links_created[@]} links)"
+else
+  track_error "Symlinks de zsh fallidos: ${zsh_links_failed[*]}"
 fi
 
 # ── 15. Post-config CLI ─────────────────────────────────────────────────────
@@ -686,14 +757,15 @@ else
   echo -e "${GREEN}${BOLD}¡Todo se instaló y configuró sin errores!${RESET}\n"
 fi
 
-echo -e "${BOLD}${CYAN}Próximos pasos manuales sugeridos:${RESET}"
-echo "  1. Reiniciar sesión para que zsh tome efecto"
-echo "  2. Verificar monitores en ~/.config/hypr/monitors.conf"
-echo "  3. Revisar dispositivos de audio: pactl list sinks"
-echo "  4. Si hubo errores en stow, revisa archivos conflictivos en ~/.config"
-echo "  5. Configurar reglas de nftables según necesidad: sudo nft list ruleset"
-echo "  6. Verificar snapshots de snapper: sudo snapper list"
-echo "  7. Configurar contraseña de root: sudo passwd root"
-echo "  8. Instalar GRUB theme Nino (instalación manual)"
-echo "  9. Deploy manual de system configs (mkinitcpio.conf, vconsole.conf)"
+echo -e "${BOLD}${CYAN}Próximos pasos:${RESET}"
+echo "  1. Si querés iniciar Hyprland ahora: sudo systemctl start sddm"
+echo "  2. O reiniciá normalmente para aplicar todos los cambios"
+echo ""
+read -rp "¿Reiniciar ahora? [Y/n]: " confirm_reboot
+if [[ ! "$confirm_reboot" =~ ^[Nn]$ ]]; then
+  info "Reiniciando en 5 segundos..."
+  sleep 5
+  sudo systemctl reboot
+fi
+
 echo -e "${BOLD}${CYAN}════════════════════════════════════════════════════════════════${RESET}\n"
