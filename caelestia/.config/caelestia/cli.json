@@ -1,6 +1,6 @@
 {
     "wallpaper": {
-        "postHook": "~/.config/caelestia/hooks/kitty-theme.sh && ~/.config/caelestia/hooks/opencode-theme.sh && ~/.config/caelestia/hooks/firefox-theme.sh && ~/.config/caelestia/hooks/cache-themes.sh"
+        "postHook": "~/.config/caelestia/hooks/kitty-theme.sh && ~/.config/caelestia/hooks/opencode-theme.sh && ~/.config/caelestia/hooks/firefox-theme.sh && ~/.config/caelestia/hooks/terax-theme.sh && ~/.config/caelestia/hooks/cache-themes.sh"
     },
     "theme": {
         "enableTerm": true,
