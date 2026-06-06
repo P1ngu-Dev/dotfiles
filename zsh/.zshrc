@@ -11,6 +11,8 @@ fi
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 export MICRO_TRUECOLOR=1
+export PATH="$HOME/.local/bin:$PATH"
+fpath=("$HOME/.local/share/zsh" $fpath)
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
@@ -139,3 +141,11 @@ export PATH="$PATH:/home/pingu/.lmstudio/bin"
 export PATH="/home/pingu/.local/bin:$PATH"
 
 export PATH=$PATH:/home/pingu/.spicetify
+
+# pnpm
+export PNPM_HOME="/home/pingu/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

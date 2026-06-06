@@ -2,16 +2,14 @@
 
 [appearance.themes]
 system_theme = false
-theme = {
-  custom = { name = "Caelestia Theme", path = "/home/pingu/.local/share/warp-terminal/themes/caelestia.yaml" },
-}
+theme = { custom = { name = "Caelestia Theme", path = "caelestia.yaml" } }
 
 [appearance.vertical_tabs]
 enabled = false
 
 [appearance.window]
 zoom_level = 125
-override_opacity = 70
+override_opacity = 75
 
 [appearance.text]
 notebook_font_size = 14.0
@@ -33,10 +31,11 @@ cursor_display_type = "bar"
 [terminal]
 use_audible_bell = false
 osc52_clipboard_access = "write_only"
+show_terminal_zero_state_block = false
 
 [terminal.input]
-input_box_type_setting = "classic"
-honor_ps1 = true
+input_box_type_setting = "universal"
+honor_ps1 = false
 
 [agents]
 cloud_conversation_storage_enabled = true
@@ -53,6 +52,9 @@ show_conversation_history = true
 
 [agents.third_party]
 should_render_cli_agent_toolbar = true
+
+[agents.profiles]
+agent_mode_coding_permissions = "always_allow_reading"
 
 [account]
 is_settings_sync_enabled = true

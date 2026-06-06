@@ -50,7 +50,7 @@
         }
     },
     "dashboard": {
-        "showOnHover": true
+        "showOnHover": false
     },
     "general": {
         "apps": {
@@ -80,9 +80,13 @@
             "bssh",
             "bvnc",
             "avahi-discover",
-            "lstopo"
+            "lstopo",
+            "nm-connection-editor"
         ],
-        "showOnHover": false
+        "showOnHover": false,
+        "useFuzzy": {
+            "apps": false
+        }
     },
     "paths": {
         "wallpaperDir": "~/Pictures/Wallpapers"
