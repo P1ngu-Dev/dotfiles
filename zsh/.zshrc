@@ -149,3 +149,7 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# >>> Codex installer >>>
+export PATH="/home/pingu/.local/bin:$PATH"
+# <<< Codex installer <<<
